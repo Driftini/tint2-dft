@@ -759,7 +759,7 @@ gboolean layout_set_markup_strip_colors(PangoLayout *layout, const char *markup)
 
 void draw_shadow(cairo_t *c, int posx, int posy, PangoLayout *shadow_layout)
 {
-    const int shadow_size = 3;
+    const int shadow_size = 2;
     const double shadow_edge_alpha = 0.0;
     int i, j;
     for (i = -shadow_size; i <= shadow_size; i++) {
@@ -768,11 +768,11 @@ void draw_shadow(cairo_t *c, int posx, int posy, PangoLayout *shadow_layout)
                                   0.0,
                                   0.0,
                                   0.0,
-                                  1.0 -
-                                      (1.0 - shadow_edge_alpha) *
+                                  .2 -
+                                      (.2 - shadow_edge_alpha) *
                                           sqrt((i * i + j * j) / (double)(shadow_size * shadow_size)));
             pango_cairo_update_layout(c, shadow_layout);
-            cairo_move_to(c, posx + i, posy + j);
+            cairo_move_to(c, posx + i, posy + j + 1);
             pango_cairo_show_layout(c, shadow_layout);
         }
     }

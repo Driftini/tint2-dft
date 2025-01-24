@@ -534,6 +534,9 @@ void draw_execp(void *obj, cairo_t *c)
     PangoLayout *layout = create_execp_text_layout(execp, context);
     PangoLayout *shadow_layout = NULL;
 
+    if (panel_config.font_shadow)
+        shadow_layout = layout;
+
     if (execp->backend->has_icon && execp->backend->icon) {
         imlib_context_set_image(execp->backend->icon);
         // Render icon
@@ -541,18 +544,18 @@ void draw_execp(void *obj, cairo_t *c)
     }
 
     // draw layout
-    if (!execp->backend->has_markup) {
+    if (!execp->backend->has_markup)
         pango_layout_set_text(layout, execp->backend->text, strlen(execp->backend->text));
-    } else {
+    else
         pango_layout_set_markup(layout, execp->backend->text, strlen(execp->backend->text));
-        if (panel_config.font_shadow) {
-            shadow_layout = create_execp_text_layout(execp, context);
-            if (!layout_set_markup_strip_colors(shadow_layout, execp->backend->text)) {
-                g_object_unref(shadow_layout);
-                shadow_layout = NULL;
-            }
-        }
-    }
+    //     if (panel_config.font_shadow) {
+    //         shadow_layout = create_execp_text_layout(execp, context);
+    //         if (!layout_set_markup_strip_colors(shadow_layout, execp->backend->text)) {
+    //             g_object_unref(shadow_layout);
+    //             shadow_layout = NULL;
+    //         }
+    //     }
+    // }
 
     pango_cairo_update_layout(c, layout);
     draw_text(layout,
@@ -935,6 +938,10 @@ gboolean read_execp(void *obj)
             execp->backend->last_update_finish_time = time(NULL);
             execp->backend->last_update_duration =
                 execp->backend->last_update_finish_time - execp->backend->last_update_start_time;
+
+            // fprintf(stderr, YELLOW "%i\n", execp->backend->buf_stdout);
+            // free_and_null(execp->backend->buf_stdout);
+
             return TRUE;
         }
     }
